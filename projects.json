@@ -1,0 +1,27 @@
+[
+  {
+    "name": "CleanYourMac",
+    "repo": "Anthony-Pan/CleanYourMac",
+    "description": "An interactive macOS cleanup tool that measures before it removes.",
+    "tags": ["Swift", "macOS", "Safety first"],
+    "fallback_stars": 1,
+    "fallback_languages": {"Swift": 100}
+  },
+  {
+    "name": "dotfiles",
+    "repo": "Anthony-Pan/dotfiles",
+    "description": "A focused, repeatable setup for a personal development environment.",
+    "tags": ["Shell", "Automation", "Developer UX"],
+    "fallback_stars": 1,
+    "fallback_languages": {"Shell": 100}
+  },
+  {
+    "name": "acorn",
+    "repo": "Anthony-Pan/acorn",
+    "description": "A warm local-first AI companion that turns a messy day into clear next steps.",
+    "tags": ["Rust", "Local first", "AI"],
+    "fallback_stars": 1,
+    "fallback_languages": {"Rust": 100}
+  }
+]
+

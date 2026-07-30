@@ -1,0 +1,59 @@
+name: Refresh profile assets
+
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "profile.json"
+      - "projects.json"
+      - "assets/profile.png"
+      - "scripts/**"
+      - ".github/workflows/refresh-profile.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-assets
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Generate hero panels
+        run: python3 scripts/generate_hero.py
+
+      - name: Generate project panels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/generate_projects.py
+
+      - name: Generate contribution streams
+        uses: Platane/snk/svg-only@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            assets/snake-light.svg?palette=github-light&color_snake=%23006C8F
+            assets/snake-dark.svg?palette=github-dark&color_snake=%23A361EB&color_dots=#111827,#263A69,#6737C7,#A361EB,#58D6FF
+
+      - name: Commit refreshed assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/hero-dark.svg assets/hero-light.svg
+          git add assets/projects-dark.svg assets/projects-light.svg
+          git add assets/snake-dark.svg assets/snake-light.svg
+          if git diff --cached --quiet; then
+            echo "Profile assets are already current."
+            exit 0
+          fi
+          git commit -m "chore: refresh profile assets [skip ci]"
+          git push

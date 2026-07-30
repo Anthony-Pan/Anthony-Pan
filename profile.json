@@ -1,0 +1,19 @@
+{
+  "name": "Anthony Pan",
+  "username": "Anthony-Pan",
+  "role": "Founder · Product Engineer",
+  "studio": "ONYX Lab",
+  "focus": "AI-native products, built by hand",
+  "building": ["Feedii", "FillMate"],
+  "public_projects": ["CleanYourMac", "dotfiles", "acorn"],
+  "stack": [
+    {"label": "Core.iOS", "value": "Swift · SwiftUI"},
+    {"label": "Core.Cross", "value": "Flutter · Dart"},
+    {"label": "Core.Backend", "value": "Supabase · Edge Functions"},
+    {"label": "Core.AI", "value": "Vision · LLM pipelines"}
+  ],
+  "github_url": "https://github.com/Anthony-Pan",
+  "website_url": "https://www.onyx-lab.com/builder",
+  "tagline": "Cut. Polished. Shipped."
+}
+

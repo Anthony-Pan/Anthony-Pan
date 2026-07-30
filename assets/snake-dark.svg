@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="116" viewBox="0 0 1180 116" role="img" aria-labelledby="title desc">
+  <title id="title">Contribution stream placeholder</title>
+  <desc id="desc">The animated contribution stream appears after the first GitHub Actions run.</desc>
+  <rect width="1180" height="116" fill="#050912"/>
+  <path d="M18 18H1162V98H18Z" fill="#081020" stroke="#263A69"/>
+  <text x="42" y="51" fill="#58D6FF" font-family="ui-monospace,monospace" font-size="14" letter-spacing="2">CONTRIBUTION.STREAM</text>
+  <text x="42" y="78" fill="#91A0BE" font-family="ui-monospace,monospace" font-size="13">initializes after the first profile workflow run</text>
+  <circle cx="1131" cy="58" r="6" fill="#C7F36B"><animate attributeName="opacity" values="1;.25;1" dur="1.8s" repeatCount="indefinite"/></circle>
+</svg>
+
