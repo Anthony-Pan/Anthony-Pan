@@ -51,7 +51,9 @@ def esc(value: object) -> str:
 def is_xml_text(value: str) -> bool:
     return all(
         character in "\t\n\r"
-        or (ord(character) >= 0x20 and not 0xD800 <= ord(character) <= 0xDFFF)
+        or 0x20 <= ord(character) <= 0xD7FF
+        or 0xE000 <= ord(character) <= 0xFFFD
+        or 0x10000 <= ord(character) <= 0x10FFFF
         for character in value
     )
 
@@ -158,7 +160,7 @@ def render(profile: dict, portrait_uri: str, theme: str) -> str:
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="620" viewBox="0 0 1180 620" role="img" aria-labelledby="title desc">
   <title id="title">Anthony Pan — ONYX Builder Console</title>
-  <desc id="desc">Anthony Pan is the founder and product engineer at ONYX Lab, building Feedii and FillMate with Swift, Flutter, Supabase, and applied AI.</desc>
+  <desc id="desc">Anthony Pan is the founder and product engineer at ONYX Lab, building liqtime with Swift, Flutter, Supabase, and applied AI.</desc>
   <style>
     .mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }}
     .small {{ font-size: 13px; }}
@@ -199,7 +201,6 @@ def render(profile: dict, portrait_uri: str, theme: str) -> str:
     </pattern>
   </defs>
 
-  <rect width="1180" height="620" fill="{p["bg"]}"/>
   <path d="{outer}" fill="{p["surface"]}" stroke="url(#frame)" stroke-width="2"/>
   <path d="M30 30H1150V590H30Z" fill="url(#microgrid)" opacity=".34"/>
 
@@ -260,10 +261,23 @@ def main() -> None:
     profile = load_profile()
     portrait_uri = portrait_data_uri()
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
-    for theme in PALETTES:
-        output = ASSET_DIR / f"hero-{theme}.svg"
-        output.write_text(render(profile, portrait_uri, theme), encoding="utf-8")
-        print(f"wrote {output.relative_to(ROOT)}")
+    outputs = {
+        ASSET_DIR / f"hero-{theme}.svg": render(profile, portrait_uri, theme)
+        for theme in PALETTES
+    }
+    temporary_outputs: list[tuple[Path, Path]] = []
+    try:
+        for output, content in outputs.items():
+            temporary = output.with_name(f".{output.name}.tmp")
+            temporary.write_text(content, encoding="utf-8")
+            temporary_outputs.append((temporary, output))
+        for temporary, output in temporary_outputs:
+            temporary.replace(output)
+            print(f"wrote {output.relative_to(ROOT)}")
+    except OSError:
+        for temporary, _ in temporary_outputs:
+            temporary.unlink(missing_ok=True)
+        raise
 
 
 if __name__ == "__main__":

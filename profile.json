@@ -4,7 +4,7 @@
   "role": "Founder · Product Engineer",
   "studio": "ONYX Lab",
   "focus": "AI-native products, built by hand",
-  "building": ["Liquidity"],
+  "building": ["liqtime"],
   "public_projects": ["CleanYourMac", "acorn"],
   "stack": [
     {"label": "Core.iOS", "value": "Swift · SwiftUI"},

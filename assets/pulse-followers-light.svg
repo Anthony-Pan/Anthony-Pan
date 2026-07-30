@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="134" viewBox="0 0 256 134" role="img" aria-labelledby="title desc">
+  <title id="title">FOLLOWERS: 1</title>
+  <desc id="desc">Open Anthony Pan's GitHub followers page.</desc>
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .label { font-size: 12px; letter-spacing: 1.2px; }
+    .value { font-size: 32px; font-weight: 700; }
+  </style>
+  <rect x="1" y="1" width="254" height="132" rx="14" fill="#FFFFFF" stroke="#AEB8C6"/>
+  <circle cx="23" cy="29" r="5" fill="#526B00"/>
+  <text x="39" y="34" class="mono label" fill="#556078">FOLLOWERS</text>
+  <text x="20" y="83" class="mono value" fill="#101827">1</text>
+  <line x1="20" y1="102" x2="236" y2="102" stroke="#AEB8C6"/>
+  <text x="20" y="119" class="mono" font-size="10" letter-spacing="1" fill="#526B00">OPEN ON GITHUB  ↗</text>
+</svg>

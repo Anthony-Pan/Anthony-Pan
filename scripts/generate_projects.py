@@ -251,7 +251,6 @@ def render_card(project: dict, theme: str) -> str:
     @keyframes pulse {{ 50% {{ opacity: .28; }} }}
     @media (prefers-reduced-motion: reduce) {{ .pulse {{ animation: none; }} }}
   </style>
-  <rect width="548" height="196" fill="{palette["bg"]}"/>
   {card(project, 0, 0, 0, palette)}
 </svg>'''
 
