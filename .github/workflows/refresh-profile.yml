@@ -36,6 +36,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/generate_projects.py
 
+      - name: Generate GitHub pulse panel
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/generate_pulse.py
+
       - name: Generate contribution streams
         uses: Platane/snk/svg-only@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3
         with:
@@ -48,9 +53,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/hero-dark.svg assets/hero-light.svg
-          git add assets/projects-dark.svg assets/projects-light.svg
-          git add assets/snake-dark.svg assets/snake-light.svg
+          git add -A assets/
           if git diff --cached --quiet; then
             echo "Profile assets are already current."
             exit 0

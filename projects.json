@@ -8,14 +8,6 @@
     "fallback_languages": {"Swift": 100}
   },
   {
-    "name": "dotfiles",
-    "repo": "Anthony-Pan/dotfiles",
-    "description": "A focused, repeatable setup for a personal development environment.",
-    "tags": ["Shell", "Automation", "Developer UX"],
-    "fallback_stars": 1,
-    "fallback_languages": {"Shell": 100}
-  },
-  {
     "name": "acorn",
     "repo": "Anthony-Pan/acorn",
     "description": "A warm local-first AI companion that turns a messy day into clear next steps.",
@@ -24,4 +16,3 @@
     "fallback_languages": {"Rust": 100}
   }
 ]
-

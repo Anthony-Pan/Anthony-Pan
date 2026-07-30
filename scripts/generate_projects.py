@@ -8,6 +8,7 @@ import html
 import json
 import math
 import os
+import re
 import textwrap
 import urllib.error
 import urllib.request
@@ -46,6 +47,8 @@ PALETTES = {
     },
 }
 LANGUAGE_COLORS = ["#58D6FF", "#A361EB", "#C7F36B", "#6783D2", "#91A0BE"]
+GITHUB_OWNER_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
+GITHUB_REPOSITORY_RE = re.compile(r"^[A-Za-z0-9_.-]{1,100}$")
 
 
 def esc(value: object) -> str:
@@ -55,7 +58,9 @@ def esc(value: object) -> str:
 def is_xml_text(value: str) -> bool:
     return all(
         character in "\t\n\r"
-        or (ord(character) >= 0x20 and not 0xD800 <= ord(character) <= 0xDFFF)
+        or 0x20 <= ord(character) <= 0xD7FF
+        or 0xE000 <= ord(character) <= 0xFFFD
+        or 0x10000 <= ord(character) <= 0x10FFFF
         for character in value
     )
 
@@ -74,8 +79,12 @@ def load_projects() -> list[dict]:
             if not isinstance(value, str) or not value.strip() or not is_xml_text(value):
                 raise ValueError(f"projects.json item {index} field '{key}' must be a non-empty string")
         repo_parts = project["repo"].strip().split("/")
-        if len(repo_parts) != 2 or not all(part.strip() for part in repo_parts):
-            raise ValueError(f"projects.json item {index} field 'repo' must use owner/repository format")
+        if (
+            len(repo_parts) != 2
+            or not GITHUB_OWNER_RE.fullmatch(repo_parts[0])
+            or not GITHUB_REPOSITORY_RE.fullmatch(repo_parts[1])
+        ):
+            raise ValueError(f"projects.json item {index} field 'repo' must use a valid owner/repository format")
         tags = project.get("tags")
         if not isinstance(tags, list) or not all(
             isinstance(tag, str) and tag.strip() and is_xml_text(tag) for tag in tags
@@ -179,9 +188,7 @@ def language_bar(languages: dict, x: int, y: int, width: int, palette: dict) -> 
 def card(project: dict, x: int, y: int, index: int, palette: dict) -> str:
     width, height = 548, 196
     repo = esc(project.get("repo", "unknown/repository"))
-    raw_name = str(project.get("name", "Untitled"))
-    name = esc(raw_name)
-    initial = esc(raw_name[:1].upper() or "?")
+    name = esc(project.get("name", "Untitled"))
     description = textwrap.wrap(str(project.get("description", "")), width=54)[:2]
     tags = project.get("tags", [])[:3]
     language_items = sorted(project.get("languages", {}).items(), key=lambda item: item[1], reverse=True)[:2]
@@ -197,16 +204,14 @@ def card(project: dict, x: int, y: int, index: int, palette: dict) -> str:
         f'<circle cx="{x + 34}" cy="{y + 17}" r="4" fill="{palette["cyan"]}"/>',
         f'<text x="{x + 52}" y="{y + 21}" class="mono meta" fill="{palette["muted"]}">{repo}</text>',
         f'<circle cx="{x + width - 19}" cy="{y + 17}" r="4" fill="{palette["green"]}" class="pulse"/>',
-        f'<rect x="{x + 20}" y="{y + 54}" width="42" height="42" rx="10" fill="{palette["purple"]}" opacity=".92"/>',
-        f'<text x="{x + 41}" y="{y + 82}" class="mono" font-size="20" font-weight="700" fill="{palette["surface"]}" text-anchor="middle">{initial}</text>',
-        f'<text x="{x + 78}" y="{y + 70}" class="mono" font-size="18" font-weight="700" fill="{palette["text"]}">{name}</text>',
+        f'<text x="{x + 20}" y="{y + 70}" class="mono" font-size="18" font-weight="700" fill="{palette["text"]}">{name}</text>',
     ]
     for line_index, line in enumerate(description):
         parts.append(
-            f'<text x="{x + 78}" y="{y + 91 + line_index * 15}" class="mono desc" fill="{palette["muted"]}">{esc(line)}</text>'
+            f'<text x="{x + 20}" y="{y + 91 + line_index * 15}" class="mono desc" fill="{palette["muted"]}">{esc(line)}</text>'
         )
 
-    chip_x = x + 78
+    chip_x = x + 20
     for tag in tags:
         label = str(tag)
         chip_width = max(50, min(122, 17 + len(label) * 6.6))
@@ -230,20 +235,13 @@ def card(project: dict, x: int, y: int, index: int, palette: dict) -> str:
     return "".join(parts)
 
 
-def render(projects: list[dict], theme: str) -> str:
+def render_card(project: dict, theme: str) -> str:
+    """Render one self-contained project card for an outer README link."""
     palette = PALETTES[theme]
-    rows = (len(projects) + 1) // 2
-    height = 86 + rows * 212 + 18
-    cards = []
-    for index, project in enumerate(projects):
-        is_last_odd_card = len(projects) % 2 == 1 and index == len(projects) - 1
-        x = 316 if is_last_odd_card else (32 if index % 2 == 0 else 600)
-        y = 70 + (index // 2) * 212
-        cards.append(card(project, x, y, index, palette))
-
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="{height}" viewBox="0 0 1180 {height}" role="img" aria-labelledby="title desc">
-  <title id="title">Selected open-source projects by Anthony Pan</title>
-  <desc id="desc">Terminal-style cards for CleanYourMac, dotfiles, and acorn, refreshed from GitHub data.</desc>
+    name = esc(project["name"])
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="548" height="196" viewBox="0 0 548 196" role="img" aria-labelledby="title desc">
+  <title id="title">Open {name} on GitHub</title>
+  <desc id="desc">A terminal-style project card that links to the {name} repository.</desc>
   <style>
     .mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }}
     .meta {{ font-size: 11px; }}
@@ -253,11 +251,8 @@ def render(projects: list[dict], theme: str) -> str:
     @keyframes pulse {{ 50% {{ opacity: .28; }} }}
     @media (prefers-reduced-motion: reduce) {{ .pulse {{ animation: none; }} }}
   </style>
-  <rect width="1180" height="{height}" fill="{palette["bg"]}"/>
-  <text x="32" y="30" class="mono" font-size="14" letter-spacing="2.6" fill="{palette["cyan"]}">PUBLIC.BUILD_LOG</text>
-  <text x="32" y="52" class="mono meta" fill="{palette["muted"]}">selected work · live repository metadata · repository links below</text>
-  <line x1="32" y1="60" x2="1148" y2="60" stroke="{palette["line"]}"/>
-  {''.join(cards)}
+  <rect width="548" height="196" fill="{palette["bg"]}"/>
+  {card(project, 0, 0, 0, palette)}
 </svg>'''
 
 
@@ -269,10 +264,35 @@ def main() -> None:
 
     projects = [enrich(project, args.offline) for project in load_projects()]
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    for theme in PALETTES:
-        output = args.output_dir / f"projects-{theme}.svg"
-        output.write_text(render(projects, theme), encoding="utf-8")
-        print(f"wrote {output}")
+    outputs: dict[Path, str] = {}
+    seen_slugs: set[str] = set()
+    for project in projects:
+        slug = re.sub(r"[^a-z0-9]+", "-", project["name"].lower()).strip("-")
+        if not slug or slug in seen_slugs:
+            raise ValueError(f"project name produces a duplicate or empty asset slug: {project['name']}")
+        seen_slugs.add(slug)
+        for theme in PALETTES:
+            output = args.output_dir / f"project-{slug}-{theme}.svg"
+            outputs[output] = render_card(project, theme)
+
+    temporary_outputs: list[tuple[Path, Path]] = []
+    try:
+        for output, content in outputs.items():
+            temporary = output.with_name(f".{output.name}.tmp")
+            temporary.write_text(content, encoding="utf-8")
+            temporary_outputs.append((temporary, output))
+        for temporary, output in temporary_outputs:
+            temporary.replace(output)
+            print(f"wrote {output}")
+    except OSError:
+        for temporary, _ in temporary_outputs:
+            temporary.unlink(missing_ok=True)
+        raise
+
+    for stale_output in args.output_dir.glob("project-*.svg"):
+        if stale_output not in outputs:
+            stale_output.unlink()
+            print(f"removed {stale_output}")
 
 
 if __name__ == "__main__":
