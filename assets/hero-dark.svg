@@ -62,7 +62,7 @@
     <text x="172" y="284" class="mono" font-size="16" fill="#91A0BE">/ AI-native products, built by hand</text>
 
     <text x="56" y="326" class="mono small" fill="#91A0BE">$ now --building</text>
-    <text x="218" y="326" class="mono" font-size="15" font-weight="700" fill="#C7F36B">FEEDII / FILLMATE</text>
+    <text x="218" y="326" class="mono" font-size="15" font-weight="700" fill="#C7F36B">LIQUIDITY</text>
     <text x="56" y="356" class="mono small" fill="#91A0BE">$ ls public/</text>
     <text x="184" y="356" class="mono small" fill="#EAF2FF">CleanYourMac  ·  acorn</text>
     <text x="58" y="390" class="mono small" fill="#58D6FF">Core.iOS</text><line x1="184" y1="385" x2="383" y2="385" stroke="#263A69" stroke-dasharray="2 6"/><text x="397" y="390" class="mono small" fill="#EAF2FF">Swift · SwiftUI</text><text x="58" y="418" class="mono small" fill="#58D6FF">Core.Cross</text><line x1="184" y1="413" x2="383" y2="413" stroke="#263A69" stroke-dasharray="2 6"/><text x="397" y="418" class="mono small" fill="#EAF2FF">Flutter · Dart</text><text x="58" y="446" class="mono small" fill="#58D6FF">Core.Backend</text><line x1="184" y1="441" x2="383" y2="441" stroke="#263A69" stroke-dasharray="2 6"/><text x="397" y="446" class="mono small" fill="#EAF2FF">Supabase · Edge Functions</text><text x="58" y="474" class="mono small" fill="#58D6FF">Core.AI</text><line x1="184" y1="469" x2="383" y2="469" stroke="#263A69" stroke-dasharray="2 6"/><text x="397" y="474" class="mono small" fill="#EAF2FF">Vision · LLM pipelines</text>
