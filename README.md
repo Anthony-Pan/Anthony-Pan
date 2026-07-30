@@ -21,14 +21,14 @@
       <img src="./assets/pulse-stars-dark.svg" alt="View Anthony Pan's repositories by stars." width="24%">
     </picture>
   </a>
-  <a href="https://github.com/Anthony-Pan/followers">
+  <a href="https://github.com/Anthony-Pan?tab=followers">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./assets/pulse-followers-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="./assets/pulse-followers-light.svg">
       <img src="./assets/pulse-followers-dark.svg" alt="View Anthony Pan's followers." width="24%">
     </picture>
   </a>
-  <a href="https://github.com/Anthony-Pan/following">
+  <a href="https://github.com/Anthony-Pan?tab=following">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./assets/pulse-following-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="./assets/pulse-following-light.svg">
